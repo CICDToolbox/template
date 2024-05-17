@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+title: ""
+message: ""
+type: software
+version: 0.0.1
+date-released: YYYY-MM-DD
+repository-code: ""
+abstract: some needs to go here
+keywords:
+  - "Wolf Software"
+  - "Software"
+license: MIT
+authors:
+  - family-names: "Wolf"
+    orcid: "https://orcid.org/0009-0007-0983-2072"

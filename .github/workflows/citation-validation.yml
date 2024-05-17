@@ -1,0 +1,84 @@
+name: Citation Validation
+
+# Triggers for the workflow include any push event that does not affect branches prefixed with 'dependabot/'
+# and any pull request to any branch in the repository.
+on:
+  push:
+    branches-ignore:
+      - 'dependabot/**'
+    paths:
+      - 'CITATION.cff'
+  pull_request:
+    branches:
+      - '**'
+    paths:
+      - 'CITATION.cff'
+
+# Manage concurrency to prevent multiple instances of the workflow from running simultaneously on the same branch.
+# If a new run starts, it cancels any currently running instance.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Set default permissions to read-only to enhance security.
+permissions: read-all
+
+jobs:
+  get-ruby-version:
+    name: Get Ruby Versions
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-language-versions.outputs.latest-versions }}
+    steps:
+    - uses: ActionsToolbox/get-language-versions-action@446919617fd774095b5dd3ed71c39dd3fd0d8f4f # v0.1.3
+      id: get-language-versions
+      with:
+        language: "ruby"
+        highest-only: true
+        remove-patch-version: true
+
+  awesomebot:
+    name: Awesomebot
+    needs: get-ruby-version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b # v4.1.5
+      - name: Set up Ruby ${{ needs.get-ruby-version.outputs.version }}
+        uses: ruby/setup-ruby@cacc9f1c0b3f4eb8a16a6bb0ed10897b43b9de49 # v1.176.0
+        with:
+          ruby-version: ${{ needs.get-ruby-version.outputs.version }}
+      - name: Run Awesomebot
+        env:
+          FLAGS: "default"
+          WHITELIST: "https://img.shields.io"
+          INCLUDE_FILES: "CITATION.cff"
+        run: bash <(curl -s https://raw.githubusercontent.com/CICDToolbox/awesomebot/master/pipeline.sh)
+
+  validate-citation-file:
+    name: Validate CITATION.cff
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out a copy of the repository
+        uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b # v4.1.5
+
+      - name: Check whether the citation metadata from CITATION.cff is valid
+        uses: citation-file-format/cffconvert-github-action@4cf11baa70a673bfdf9dad0acc7ee33b3f4b6084 # v2.0.0
+        with:
+            args: "--validate"
+
+  #
+  # You might ask yourself 'why are we using a wrapper function?' it is to make the branch protection rules easier to manage.
+  #
+  citation-validation-pipeline:
+    if: always()  # This ensures the job runs regardless of the results of previous jobs.
+    name: Citation Validation Pipeline
+    needs:
+      - awesomebot
+      - validate-citation-file
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b # v4.1.5
+      - name: Check Job Statuses
+        run: .github/scripts/check-jobs.sh '${{ toJson(needs) }}'
