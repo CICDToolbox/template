@@ -130,27 +130,27 @@ AND
 
 ## Tools built using this template
 
-| Name                                                                              | Purpose                                                                                                            |
-| :-------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------- |
-| [Action Lint](https://github.com/CICDToolbox/action-lint)                         | Validate your GitHub action files using [actionlint](https://github.com/rhysd/actionlint).                         |
-| [Awesomebot](https://github.com/CICDToolbox/awesomebot)                           | Link check your files with [awesome_bot](https://rubygems.org/gems/awesome_bot).                                   |
-| [Bandit](https://github.com/CICDToolbox/bandit)                                   | Inspect your Python projects for security issues using [bandit](https://pypi.org/project/bandit/).                 |
-| [Hadolint](https://github.com/CICDToolbox/hadolint)                               | Validate your Dockerfiles using [hadolint](https://github.com/hadolint/hadolint).                                  |
-| [JSON Lint](https://github.com/CICDToolbox/json-lint)                             | Validate your JSON files using [jq](https://stedolan.github.io/jq/).                                               |
-| [Markdown Lint](https://github.com/CICDToolbox/markdown-lint)                     | Validate your markdown files in using [markdownlint-cli](https://github.com/igorshubovych/markdownlint-cli).       |
-| [Perl Lint](https://github.com/CICDToolbox/perl-lint)                             | Validate your Perl scripts using the native perl linter.                                                           |
-| [PHP Lint](https://github.com/CICDToolbox/php-lint)                               | Validate your PHP code using [phplint](https://github.com/overtrue/phplint).                                      |
-| [Puppet Lint](https://github.com/CICDToolbox/puppet-lint)                         | Validate your Puppet files using [puppet-lint](https://rubygems.org/gems/puppet-lint).                             |
-| [Pur](https://github.com/CICDToolbox/pur)                                         | Verify your Python projects requirements.txt for updates using [pur](https://pypi.org/project/pur/).               |
-| [PyCodeStyle](https://github.com/CICDToolbox/pycodestyle)                         | Inspect your Python projects for code smells using [pycodestyle](https://pypi.org/project/pycodestyle/).           |
-| [PyDocStyle](https://github.com/CICDToolbox/pydocstyle)                           | Validate your Python project documentation for compliance with [pydocstyle](https://pypi.org/project/pydocstyle/). |
-| [Pylama](https://github.com/CICDToolbox/pylama)                                   | Validate your Python project documentation for compliance with [pylama](https://pypi.org/project/pylama/).         |
-| [Pylint](https://github.com/CICDToolbox/pylint)                                   | Inspect your Python projects for code smells using [pylint](https://pypi.org/project/pylint/).                     |
-| [Reek](https://github.com/CICDToolbox/reek)                                       | Inspect your Ruby code for code smells using [reek](https://rubygems.org/gems/reek).                               |
-| [Rubocop](https://github.com/CICDToolbox/rubocop)                                 | Perform static code analysis on Ruby code using [rubocop](https://rubygems.org/gems/rubocop).                      |
-| [ShellCheck](https://github.com/CICDToolbox/shellcheck)                           | Perform static code analysis on shell scripts using [ShellCheck](https://github.com/koalaman/shellcheck).          |
-| [Validate Citations File](https://github.com/CICDToolbox/validate-citations-file) | Validate CITATIONS.cff using [cffconvert](https://pypi.org/project/cffconvert/).                                   |
-| [YAML Lint](https://github.com/CICDToolbox/yaml-lint)                             | Validate your yaml files in CI/CD pipelines using [yamllint](https://pypi.org/project/yamllint/).                  |
+|  #  | Name                                                                              | Purpose                                                                                                            |
+| :-: | :-------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------- |
+| 1   | [Action Lint](https://github.com/CICDToolbox/action-lint)                         | Validate your GitHub action files using [actionlint](https://github.com/rhysd/actionlint).                         |
+| 2   | [Awesomebot](https://github.com/CICDToolbox/awesomebot)                           | Link check your files with [awesome_bot](https://rubygems.org/gems/awesome_bot).                                   |
+| 3   | [Bandit](https://github.com/CICDToolbox/bandit)                                   | Inspect your Python projects for security issues using [bandit](https://pypi.org/project/bandit/).                 |
+| 4   | [Hadolint](https://github.com/CICDToolbox/hadolint)                               | Validate your Dockerfiles using [hadolint](https://github.com/hadolint/hadolint).                                  |
+| 5   | [JSON Lint](https://github.com/CICDToolbox/json-lint)                             | Validate your JSON files using [jq](https://stedolan.github.io/jq/).                                               |
+| 6   | [Markdown Lint](https://github.com/CICDToolbox/markdown-lint)                     | Validate your markdown files in using [markdownlint-cli](https://github.com/igorshubovych/markdownlint-cli).       |
+| 7   | [Perl Lint](https://github.com/CICDToolbox/perl-lint)                             | Validate your Perl scripts using the native perl linter.                                                           |
+| 8   | [PHP Lint](https://github.com/CICDToolbox/php-lint)                               | Validate your PHP code using [phplint](https://github.com/overtrue/phplint).                                      |
+| 9   | [Puppet Lint](https://github.com/CICDToolbox/puppet-lint)                         | Validate your Puppet files using [puppet-lint](https://rubygems.org/gems/puppet-lint).                             |
+| 10  | [Pur](https://github.com/CICDToolbox/pur)                                         | Verify your Python projects requirements.txt for updates using [pur](https://pypi.org/project/pur/).               |
+| 11  | [PyCodeStyle](https://github.com/CICDToolbox/pycodestyle)                         | Inspect your Python projects for code smells using [pycodestyle](https://pypi.org/project/pycodestyle/).           |
+| 12  | [PyDocStyle](https://github.com/CICDToolbox/pydocstyle)                           | Validate your Python project documentation for compliance with [pydocstyle](https://pypi.org/project/pydocstyle/). |
+| 13  | [Pylama](https://github.com/CICDToolbox/pylama)                                   | Validate your Python project documentation for compliance with [pylama](https://pypi.org/project/pylama/).         |
+| 14  | [Pylint](https://github.com/CICDToolbox/pylint)                                   | Inspect your Python projects for code smells using [pylint](https://pypi.org/project/pylint/).                     |
+| 15  | [Reek](https://github.com/CICDToolbox/reek)                                       | Inspect your Ruby code for code smells using [reek](https://rubygems.org/gems/reek).                               |
+| 16  | [Rubocop](https://github.com/CICDToolbox/rubocop)                                 | Perform static code analysis on Ruby code using [rubocop](https://rubygems.org/gems/rubocop).                      |
+| 17  | [ShellCheck](https://github.com/CICDToolbox/shellcheck)                           | Perform static code analysis on shell scripts using [ShellCheck](https://github.com/koalaman/shellcheck).          |
+| 18  | [Validate Citations File](https://github.com/CICDToolbox/validate-citations-file) | Validate CITATIONS.cff using [cffconvert](https://pypi.org/project/cffconvert/).                                   |
+| 19  | [YAML Lint](https://github.com/CICDToolbox/yaml-lint)                             | Validate your yaml files in CI/CD pipelines using [yamllint](https://pypi.org/project/yamllint/).                  |
 
 <br />
 <p align="right"><a href="https://wolfsoftware.com/"><img src="https://img.shields.io/badge/Created%20by%20Wolf%20on%20behalf%20of%20Wolf%20Software-blue?style=for-the-badge" /></a></p>
