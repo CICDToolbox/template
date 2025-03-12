@@ -49,7 +49,7 @@ BASE_COMMAND="${PACKAGE_NAME}"
 
 # How do we check to see if it is already installed?
 # Leave empty if you want to force install (docker for example)
-CHECK_COMMAND=("${BASE_COMMAND}" --version)
+INSTALLED_CHECK=("${BASE_COMMAND}" --version)
 
 # How to install the require tool?
 # Note: This can be empty if it is a built in bash command or similar.
@@ -138,17 +138,9 @@ REQUIRED_DIRECTORIES=("SCAN_ROOT")
 #
 
 # -------------------------------------------------------------------------------- #
-#                              Tool Specific Functions                             #
-# -------------------------------------------------------------------------------- #
-
-# -------------------------------------------------------------------------------- #
-# Function: handle_non_standard_parameters                                         #
-#                                                                                  #
+# Function: handle_non_standard_parameters()                                       #
 # Description: Handles additional or non-standard parameters if enabled.           #
 #              Stores any extra parameters in a global buffer for later use.       #
-#                                                                                  #
-# Parameters: None                                                                 #
-#                                                                                  #
 # Returns:                                                                         #
 #   1 - If non-standard parameters are disabled.                                   #
 #   0 - If parameters are processed successfully.                                  #
@@ -464,8 +456,8 @@ handle_prerequisites()
     fi
 
     # Check if required module is installed
-    if [[ ${#CHECK_COMMAND[@]} -gt 0 ]]; then
-        if ! errors=$(run_command "${CHECK_COMMAND[@]}"); then
+    if [[ ${#INSTALLED_CHECK[@]} -gt 0 ]]; then
+        if ! errors=$(run_command "${INSTALLED_CHECK[@]}"); then
             # Attempt installation if an install command is provided
             if [[ ${#INSTALL_COMMAND[@]} -gt 0 ]]; then
                 if ! errors=$(run_command "${INSTALL_COMMAND[@]}"); then
