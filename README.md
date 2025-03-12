@@ -57,34 +57,60 @@ places them in a local bin directory to allow them to be run any time locally fo
 
 ## Configuration Options
 
-The following environment variables can be set in order to customise the script.
+There are a lot of configuration options for this template. They are all documented within the script, but we have added some high-level documentation
+for each here as well.
 
-| Name          | Default Value  | Purpose                                                                                                                                                                         |
-| :------------ | :------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| INCLUDE_FILES | Unset          | A comma separated list of files to include for being scanned. You can also use `regex` to do pattern matching.                                                                  |
-| EXCLUDE_FILES | Unset          | A comma separated list of files to exclude from being scanned. You can also use `regex` to do pattern matching.                                                                 |
-| NO_COLOR      | False          | Turn off the color in the output. (It is turned off by default inside of pipelines)                                                                                             |
-| REPORT_ONLY   | False          | Generate the report but do not fail the build even if an error occurred.                                                                                                        |
-| SHOW_ERRORS   | True           | Show the actual errors instead of just which files had errors.                                                                                                                  |
-| SHOW_SKIPPED  | False          | Show which files are being skipped.                                                                                                                                             |
-| WHITELIST     | Unset          | A comma separated list of files to be excluded from being checked.                                                                                                              |
+| Name                           | Purpose                                                                                                                                                        |
+| :----------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BANNER_NAME                    | The name to show on the banner part of the report.                                                                                                             |
+| BASE_COMMAND                   | What is base name of the package? (Shows on the report output)                                                                                                 |
+| CHECK_COMMAND                  | How do we check to see if it is already installed? Leave empty if you want to force install (docker for example).                                              |
+| DEBUG_MODE                     | Disable/ Enable extra debugging within the run_command function.                                                                                               |
+| EXTRA_PARAMETERS               | Extra parameters are options that are passed as configuration to the script that are needed for the command execution.                                         |
+| FILE_NAME_SEARCH_PATTERN       | File name to match. Regex based - used if FILE_TYPE_SEARCH_PATTERN doesn't match a file or is empty. If a file doesn't match either pattern it is 'unmatched'. |
+| FILE_TYPE_SEARCH_PATTERN       | File type to match (comes from file -b). Regex based but ignored if left empty.                                                                                |
+| INSTALL_COMMAND                | How to install the require tool? This can be empty if it is a built in bash command or similar.                                                                |
+| INSTALL_REQUIREMENTS_FROM_REPO | Run pip install -r requirements.txt to install repo specific requirements. [Only useful for python/pip based tools]                                            |
+| PACKAGE_NAME                   | What package are we installing (or url for repo to install from)?                                                                                              |
+| PREREQUISITE_COMMANDS          | What prerequisites does this pipeline have? E.g. gem, pip3, docker, npm etc.                                                                                   |
+| REDIRECTED                     | Needed for tools that require file contents to be redirected rather than accessed via a path.                                                                  |
+| SCAN_ROOT                      | The base path to use when looking for matching files.                                                                                                          |
+| TEST_COMMAND                   | The command string to run when running a tests.                                                                                                                |
+| UPDATE_PIP                     | Force an update to pip before installing the package. [Only useful for python/pip based tools]                                                                 |
+| VERSION_COMMAND                | How to get the current version of the tool that we are using.                                                                                                  |
 
-> If you set INCLUDE_FILES - it will skip ALL files that do not match, including anything in EXCLUDE_FILES.
+## Usage Options
+
+The following environment variables can be set in order to customise the script during run time.
+
+| Name           | Default Value  | Purpose                                                                                                         |
+| :------------- | :------------: | :-------------------------------------------------------------------------------------------------------------- |
+| INCLUDE_FILES  | Unset          | A comma separated list of files to include for being scanned. You can also use `regex` to do pattern matching.  |
+| EXCLUDE_FILES  | Unset          | A comma separated list of files to exclude from being scanned. You can also use `regex` to do pattern matching. |
+| NO_COLOR       | False          | Turn off the color in the output. (It is turned off by default inside of pipelines)                             |
+| REPORT_ONLY    | False          | Generate the report but do not fail the build even if an error occurred.                                        |
+| SHOW_ERRORS    | True           | Show the actual errors instead of just which files had errors.                                                  |
+| SHOW_FILTERED  | False          | Show which files are being filtered (Those that match the EXCLUDE_FILES pattern).                               |
+| SHOW_UNMATCHED | False          | Show which files which did not meet the file identification criteria.                                           |
 
 ## Example Output
 
-Running the pipeline locally against this repository and using INCLUDE_FILES="tests" results in the follow:
+Running the demo pipeline locally against this repository results in the follow:
 ```
---------------------------------------------------------------------- Stage 1: Parameters --
- Included Files: tests
----------------------------------------------------------- Stage 2: Install Prerequisites --
- [  OK  ] file is already installed
---------------------------------------------------------------- Stage 3: Run file (v5.41) --
- [  OK  ] tests/test.py
-------------------------------------------------------------------------- Stage 4: Report --
- Total: 1, OK: 1, Failed: 0, Skipped: 0
------------------------------------------------------------------------ Stage 5: Complete --
+------------------------------------------------------------------------ Run file (v5.41) --
+ [ ✅ ] tests/test.py
+---------------------------------------------------------------------------------- Report --
+ Total: 1, Passed: 1, Failed: 0, Filtered: 0, Unmatched: 7
+-------------------------------------------------------------------------------- Complete --
 ```
+
+| Name      | Icon | Description                                                                            |
+| :-------: | :--: | :------------------------------------------------------------------------------------- |
+| OK        |  ✅  | The tests for this file passed.                                                        |
+| Failed    |  ❌  | The tests for this file failed.                                                        |
+| Filtered  |  🟡  | This file matches the EXCLUDE_FILES pattern.                                           |
+| Unmatched |  🔵  | This file did not meet the file identification criteria (or an INCLUDE_FILES pattern). |
+
 ## File Identification
 
 Target files are identified using the following code:
