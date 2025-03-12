@@ -64,13 +64,13 @@ we have added some high-level documentation for each here as well.
 | :----------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | BANNER_NAME                    | The name to show on the banner part of the report.                                                                                                             |
 | BASE_COMMAND                   | What is base name of the package? (Shows on the report output)                                                                                                 |
-| CHECK_COMMAND                  | How do we check to see if it is already installed? Leave empty if you want to force install (docker for example).                                              |
 | DEBUG_MODE                     | Disable/ Enable extra debugging within the run_command function.                                                                                               |
 | EXTRA_PARAMETERS               | Extra parameters are options that are passed as configuration to the script that are needed for the command execution.                                         |
 | FILE_NAME_SEARCH_PATTERN       | File name to match. Regex based - used if FILE_TYPE_SEARCH_PATTERN doesn't match a file or is empty. If a file doesn't match either pattern it is 'unmatched'. |
 | FILE_TYPE_SEARCH_PATTERN       | File type to match (comes from file -b). Regex based but ignored if left empty.                                                                                |
 | INSTALL_COMMAND                | How to install the require tool? This can be empty if it is a built in bash command or similar.                                                                |
 | INSTALL_REQUIREMENTS_FROM_REPO | Run pip install -r requirements.txt to install repo specific requirements. [Only useful for python/pip based tools]                                            |
+| INSTALLED_CHECK                | How do we check to see if it is already installed? Leave empty if you want to force install (docker for example).                                              |
 | PACKAGE_NAME                   | What package are we installing (or url for repo to install from)?                                                                                              |
 | PREREQUISITE_COMMANDS          | What prerequisites does this pipeline have? E.g. gem, pip3, docker, npm etc.                                                                                   |
 | REDIRECTED                     | Needed for tools that require file contents to be redirected rather than accessed via a path.                                                                  |
