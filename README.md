@@ -40,7 +40,7 @@
 
 ## Overview
 
-This is the template that we use when we are creating any of the tools within the [CICD Toolbox](https://github.com/CICDToolbox). 
+This is the [template](template.sh) that we use when we are creating any of the tools within the [CICD Toolbox](https://github.com/CICDToolbox). 
 
 All of the tools have been tested against:
 
@@ -57,8 +57,8 @@ places them in a local bin directory to allow them to be run any time locally fo
 
 ## Configuration Options
 
-There are a lot of configuration options for this template. They are all documented within the script, but we have added some high-level documentation
-for each here as well.
+There are a lot of configuration options for this [template](template.sh). They are all documented within the script, but
+we have added some high-level documentation for each here as well.
 
 | Name                           | Purpose                                                                                                                                                        |
 | :----------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -95,12 +95,12 @@ The following environment variables can be set in order to customise the script 
 
 ## Example Output
 
-Running the demo pipeline locally against this repository results in the follow:
+Running the demo [pipeline](pipeline.sh) locally against this repository results in the follow:
 ```
 ------------------------------------------------------------------------ Run file (v5.41) --
  [ ✅ ] tests/test.py
 ---------------------------------------------------------------------------------- Report --
- Total: 1, Passed: 1, Failed: 0, Filtered: 0, Unmatched: 7
+ Total: 1, Passed: 1, Failed: 0, Filtered: 0, Unmatched: 0
 -------------------------------------------------------------------------------- Complete --
 ```
 
@@ -122,6 +122,12 @@ AND
 
 [[ ${filename} =~ \.(REGEX)$ ]]
 ```
+
+| Name                     | Description                                                                                                                                                    |
+| :----------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| FILE_TYPE_SEARCH_PATTERN | File type to match (comes from file -b). Regex based but ignored if left empty.                                                                                |
+| FILE_NAME_SEARCH_PATTERN | File name to match. Regex based - used if FILE_TYPE_SEARCH_PATTERN doesn't match a file or is empty. If a file doesn't match either pattern it is 'unmatched'. |
+
 
 ## Tools built using this template
 
