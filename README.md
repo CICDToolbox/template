@@ -128,7 +128,6 @@ AND
 | FILE_TYPE_SEARCH_PATTERN | File type to match (comes from file -b). Regex based but ignored if left empty.                                                                                |
 | FILE_NAME_SEARCH_PATTERN | File name to match. Regex based - used if FILE_TYPE_SEARCH_PATTERN doesn't match a file or is empty. If a file doesn't match either pattern it is 'unmatched'. |
 
-
 ## Tools built using this template
 
 | Name                                                                              | Purpose                                                                                                            |
