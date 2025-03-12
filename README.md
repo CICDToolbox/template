@@ -139,7 +139,7 @@ AND
 | [JSON Lint](https://github.com/CICDToolbox/json-lint)                             | Validate your JSON files using [jq](https://stedolan.github.io/jq/).                                               |
 | [Markdown Lint](https://github.com/CICDToolbox/markdown-lint)                     | Validate your markdown files in using [markdownlint-cli](https://github.com/igorshubovych/markdownlint-cli).       |
 | [Perl Lint](https://github.com/CICDToolbox/perl-lint)                             | Validate your Perl scripts using the native perl linter.                                                           |
-| [PHP Lint](https://github.com/CICDToolbox/php-lint)                               | Validate your PHP code using the native php linter.                                                                |
+| [PHP Lint](https://github.com/CICDToolbox/php-lint)                               | Validate your PHP code using [phplint](https://github.com/overtrue/phplint).                                      |
 | [Puppet Lint](https://github.com/CICDToolbox/puppet-lint)                         | Validate your Puppet files using [puppet-lint](https://rubygems.org/gems/puppet-lint).                             |
 | [Pur](https://github.com/CICDToolbox/pur)                                         | Verify your Python projects requirements.txt for updates using [pur](https://pypi.org/project/pur/).               |
 | [PyCodeStyle](https://github.com/CICDToolbox/pycodestyle)                         | Inspect your Python projects for code smells using [pycodestyle](https://pypi.org/project/pycodestyle/).           |
