@@ -87,7 +87,7 @@ The following environment variables can be set in order to customise the script 
 | :------------- | :------------: | :-------------------------------------------------------------------------------------------------------------- |
 | INCLUDE_FILES  | Unset          | A comma separated list of files to include for being scanned. You can also use `regex` to do pattern matching.  |
 | EXCLUDE_FILES  | Unset          | A comma separated list of files to exclude from being scanned. You can also use `regex` to do pattern matching. |
-| NO_COLOR       | False          | Turn off the color in the output. (It is turned off by default inside of pipelines)                             |
+| NO_COLOR       | False          | Turn off the color in the output.                                                                               |
 | REPORT_ONLY    | False          | Generate the report but do not fail the build even if an error occurred.                                        |
 | SHOW_ERRORS    | True           | Show the actual errors instead of just which files had errors.                                                  |
 | SHOW_FILTERED  | False          | Show which files are being filtered (Those that match the EXCLUDE_FILES pattern).                               |
