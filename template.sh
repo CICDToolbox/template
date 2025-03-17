@@ -29,14 +29,23 @@ set -uo pipefail
 # Tested with: apt-get, composer, docker, gem, go, npm and pip based tools.        #
 # -------------------------------------------------------------------------------- #
 
-# Set to true to enable extra debugging in the run_command
-DEBUG_MODE=true
+# Set to true to enable extra debugging in the run_command.
+DEBUG_MODE=false
 
-# Force an update to pip before installing the package. (Python / Pip based packages only)
+# -------------------------------------------------------------------------------- #
+# The first two variables are only relevant if you are implementing a python / pip #
+# based pipeline.                                                                  #
+# -------------------------------------------------------------------------------- #
+
+# Force an update to pip before installing the package.
 UPDATE_PIP=false
 
-# pip install -r requirements.txt. (Python / Pip based packages only)
+# pip install -r requirements.txt.
 INSTALL_REQUIREMENTS_FROM_REPO=false
+
+# -------------------------------------------------------------------------------- #
+# The remainder of the global variables are relevant for ALL types of pipelines.   #
+# -------------------------------------------------------------------------------- #
 
 # What prerequisites does this pipeline have?
 PREREQUISITE_COMMANDS=()
@@ -48,7 +57,7 @@ PACKAGE_NAME=''
 BASE_COMMAND="${PACKAGE_NAME}"
 
 # How do we check to see if it is already installed?
-# Leave empty if you want to force install (docker for example)
+# Leave empty if you want to force install or upgrade.
 INSTALLED_CHECK=("${BASE_COMMAND}" --version)
 
 # How to install the require tool?
@@ -98,7 +107,7 @@ SCAN_ROOT='.'
 # always overwrite any user based parameters!                                      #
 # -------------------------------------------------------------------------------- #
 
-# Boolean parameters and their default values
+# Boolean parameters and their default values.
 declare -A BOOL_PARAMS=(
     ["REPORT_ONLY"]=false
     ["SHOW_ERRORS"]=true
@@ -106,13 +115,13 @@ declare -A BOOL_PARAMS=(
     ["SHOW_UNMATCHED"]=false
 )
 
-# Comma-separated parameters that should be converted into arrays
+# Comma-separated parameters that should be converted into arrays / lists.
 LIST_PARAMS=("INCLUDE_FILES" "EXCLUDE_FILES")
 
-# Parameters where the default is '' and should be set if provided
+# Parameters where the default is '' and should be set if provided.
 SET_IF_PROVIDED_PARAMS=()
 
-# Associative array where the default is overwritten if a matching name is found
+# Associative array where the default is overwritten if a matching name is found.
 declare -A NAMED_VALUE_PARAMS=(
 )
 
@@ -134,11 +143,11 @@ REQUIRED_DIRECTORIES=("SCAN_ROOT")
 # -------------------------------------------------------------------------------- #
 
 #
-# Add any script specific custom global variables here
+# Add any script specific custom global variables here.
 #
 
 # -------------------------------------------------------------------------------- #
-# Function: handle_non_standard_parameters()                                       #
+# Function: handle_non_standard_parameters()                                       #
 # Description: Handles additional or non-standard parameters if enabled.           #
 #              Stores any extra parameters in a global buffer for later use.       #
 # Returns:                                                                         #
@@ -152,16 +161,16 @@ handle_non_standard_parameters()
     local extra_params
     declare -g PARAMETERS_BUFFER=""
 
-    # Exit early if no non-standard parameters have been supplied
+    # Exit early if no non-standard parameters have been supplied.
     if [[ "${parameters}" == false ]]; then
         return 1
     fi
 
-    # If extra parameters exist, split them into an array and store them globally
+    # If extra parameters exist, split them into an array and store them globally.
     if [[ -n "${extra_params}" ]]; then
-        # Convert space-separated string into an array
+        # Convert space-separated string into an array.
         read -r -a temp_array <<< "${extra_params}"
-        # Append extracted parameters to global array
+        # Append extracted parameters to global array.
         EXTRA_PARAMETERS+=("${temp_array[@]}")
     fi
     return 0
@@ -174,7 +183,7 @@ handle_non_standard_parameters()
 # that have been built and released as part of the CICDToolbox.                    #
 # -------------------------------------------------------------------------------- #
 
-# Used to track the exit state based on test results within the script
+# Used to track the exit state based on test results within the script.
 EXIT_VALUE=0
 
 # -------------------------------------------------------------------------------- #
@@ -223,7 +232,7 @@ failed()
         fi
     fi
 
-    # Set exit value to indicate failure
+    # Set exit value to indicate failure.
     EXIT_VALUE=1
 }
 
@@ -285,13 +294,13 @@ is_in_list()
     shift
     local array=("$@")
 
-    # Iterate over the list and check if the needle matches any pattern
+    # Iterate over the list and check if the needle matches any pattern.
     for pattern in "${array[@]}"; do
         if [[ "${needle}" =~ ${pattern} ]]; then
-            return 0    # Match found
+            return 0    # Match found.
         fi
     done
-    return 1            # No match found
+    return 1            # No match found.
 }
 
 # -------------------------------------------------------------------------------- #
@@ -311,9 +320,9 @@ is_excluded()
 
     # shellcheck disable=SC2154
     if is_in_list "${needle}" "${EXCLUDE_FILES[@]}"; then
-        return 0    # Item is excluded
+        return 0    # Item is excluded.
     fi
-    return 1        # Item is not excluded
+    return 1        # Item is not excluded.
 }
 
 # -------------------------------------------------------------------------------- #
@@ -333,9 +342,9 @@ is_included()
 
     # shellcheck disable=SC2154
     if is_in_list "${needle}" "${INCLUDE_FILES[@]}"; then
-        return 0    # Item is included
+        return 0    # Item is included.
     fi
-    return 1        # Item is not included
+    return 1        # Item is not included.
 }
 
 # -------------------------------------------------------------------------------- #
@@ -354,18 +363,18 @@ draw_line()
     local offset=${2:-2}
     local width=${screen_width}
 
-    # Get length of the message
+    # Get length of the message.
     local textsize=${#message}
 
-    # Define line characters and calculate left/right line widths
+    # Define line characters and calculate left/right line widths.
     local left_line='-' left_width=$((width - (textsize + offset + 2)))
     local right_line='-' right_width=${offset}
 
-    # Extend the left and right lines to match the required widths
+    # Extend the left and right lines to match the required widths.
     while ((${#left_line} < left_width)); do left_line+="${left_line}"; done
     while ((${#right_line} < right_width)); do right_line+="${right_line}"; done
 
-    # Print formatted line with message centred and cyan color
+    # Print formatted line with message centred and cyan color.
     printf '%s %s %s\n' "${left_line:0:left_width}" "${bold_cyan_text}${message}${reset}" "${right_line:0:right_width}"
 }
 
@@ -385,40 +394,40 @@ run_command()
     local output
     local -a command=()
 
-    # Flatten all input arguments (arrays + standalone strings)
+    # Flatten all input arguments (arrays + standalone strings).
     for arg in "$@"; do
         if [[ -n "${arg}" ]]; then
             if [[ "${arg}" =~ ^[[:alnum:]_]+[@]$ ]]; then
-                # Handle array references like $list1[@]
+                # Handle array references like $list1[@].
 
-                # Remove '@' and get reference to the array
+                # Remove '@' and get reference to the array.
                 local -n ref_array="${arg%@}"
-                # Append referenced array elements
+                # Append referenced array elements.
                 command+=("${ref_array[@]}")
             else
-                # Treat it as a standalone string argument
+                # Treat it as a standalone string argument.
                 command+=("${arg}")
             fi
         fi
     done
 
-    # Execute the command and capture output, handling errors
+    # Execute the command and capture output, handling errors.
     if ! output=$("${command[@]}" 2>&1); then
         if [[ "${DEBUG_MODE}" == true ]]; then
-            # Display detailed error message in debug mode
+            # Display detailed error message in debug mode.
             echo " [ ${bold_red_text}Command Error${reset} ]" >&2
             echo "              Command = ${command[*]}" >&2
             echo "              Result = ${output}" >&2
         else
-            # Show command output in non-debug mode
+            # Show command output in non-debug mode.
             echo "${output}"
         fi
-        return 1    # Indicate failure
+        return 1    # Indicate failure.
     fi
 
-    # Print successful command output
+    # Print successful command output.
     echo "${output}"
-    return 0        # Indicate success
+    return 0        # Indicate success.
 }
 
 # -------------------------------------------------------------------------------- #
@@ -439,7 +448,7 @@ handle_prerequisites()
     local prefix=" [ ${bold_red_text}Prerequisite Error${reset} ]"
     local suffix="[${bold_cyan_text}Enable DEBUG_MODE for more details${reset}]"
 
-    # Ensure all prerequisite commands are installed
+    # Ensure all prerequisite commands are installed.
     for i in "${PREREQUISITE_COMMANDS[@]}"; do
         if ! errors=$(run_command command -v "${i}"); then
             buffer+="${prefix} ${i} is not installed - Aborting! ${suffix}\n"
@@ -447,7 +456,7 @@ handle_prerequisites()
         fi
     done
 
-    # Optionally update pip if enabled
+    # Optionally update pip if enabled.
     if [[ "${UPDATE_PIP}" = true ]]; then
         if ! errors=$(run_command python3 -m pip install --quiet --upgrade pip); then
             buffer+="${prefix} Pip update failed - Aborting ${suffix}\n"
@@ -455,10 +464,10 @@ handle_prerequisites()
         fi
     fi
 
-    # Check if required module is installed
+    # Check if required module is installed.
     if [[ ${#INSTALLED_CHECK[@]} -gt 0 ]]; then
         if ! errors=$(run_command "${INSTALLED_CHECK[@]}"); then
-            # Attempt installation if an install command is provided
+            # Attempt installation if an install command is provided.
             if [[ ${#INSTALL_COMMAND[@]} -gt 0 ]]; then
                 if ! errors=$(run_command "${INSTALL_COMMAND[@]}"); then
                     buffer+="${prefix} Failed to install ${BANNER_NAME} ${suffix}\n"
@@ -468,7 +477,7 @@ handle_prerequisites()
         fi
     fi
 
-    # Install dependencies from repository requirements files if enabled
+    # Install dependencies from repository requirements files if enabled.
     if [[ "${INSTALL_REQUIREMENTS_FROM_REPO}" = true ]]; then
         while IFS= read -r filename; do
             if ! errors=$(run_command pip install -r "${filename}"); then
@@ -478,7 +487,7 @@ handle_prerequisites()
         done < <(find . -name 'requirements*.txt' -type f -not -path "./.git/*" | sed 's|^./||' | sort -Vf || true)
     fi
 
-    # If errors were found, print them and exit with failure status
+    # If errors were found, print them and exit with failure status.
     if (( errors_found > 0 )); then
         printf "%b" "${buffer}" >&2
         exit "${EXIT_VALUE}"
@@ -497,15 +506,16 @@ get_version_information()
 {
     local output VERSION
 
-    # Run the version command and capture output, removing newlines
+    # Run the version command and capture output, removing newlines.
     if ! output=$(run_command "${VERSION_COMMAND[@]}" | tr -d '\n' | head -n 1); then
-        VERSION="Unknown"  # Default to "Unknown" if command fails
+        # Default to "Unknown" if command fails.
+        VERSION="Unknown"
     else
-        # Extract numeric version from output using regex
+        # Extract numeric version from output using regex.
         VERSION="$(sed -E 's/[^0-9.]*([0-9.]+).*/\1/' <<<"${output}")"
     fi
 
-    # Construct and store the version banner
+    # Construct and store the version banner.
     BANNER="${BANNER_NAME} (Version: ${VERSION})"
 }
 
@@ -525,13 +535,13 @@ check_file()
 
     file_count=$((file_count + 1))
 
-    # Construct the command using test parameters and extra parameters
+    # Construct the command using test parameters and extra parameters.
     local command=("${TEST_COMMAND[@]}" "${EXTRA_PARAMETERS[@]}")
 
-    # Determine whether to redirect input or pass filename as an argument
+    # Determine whether to redirect input or pass filename as an argument.
     [[ "${REDIRECTED}" = true ]] && command+=("<" "${filename}") || command+=("${filename}")
 
-    # Run the command and handle success or failure
+    # Run the command and handle success or failure.
     if ! errors=$(run_command "${command[@]}"); then
         failed "${filename}" "${errors}"
     else
@@ -548,21 +558,21 @@ check_file()
 
 scan_files()
 {
-    # Read filenames from the find command output
+    # Read filenames from the find command output.
     while IFS= read -r filename; do
-        # Check if the file is explicitly included
+        # Check if the file is explicitly included.
         if is_included "${filename}"; then
             check_file "${filename}"
-        # Check if the file is explicitly excluded
+        # Check if the file is explicitly excluded.
         elif is_excluded "${filename}"; then
             filtered "${filename}"
-        # Check if the file matches the specified type pattern
+        # Check if the file matches the specified type pattern.
         elif [[ -n "${FILE_TYPE_SEARCH_PATTERN}" ]] && file -b "${filename}" | grep -qE "${FILE_TYPE_SEARCH_PATTERN}"; then
             check_file "${filename}"
-        # Check if the file matches the specified name pattern
+        # Check if the file matches the specified name pattern.
         elif [[ -n "${FILE_NAME_SEARCH_PATTERN}" ]] && [[ "${filename}" =~ ${FILE_NAME_SEARCH_PATTERN} ]]; then
             check_file "${filename}"
-        # Mark the file as unmatched if it doesn't fit any criteria
+        # Mark the file as unmatched if it doesn't fit any criteria.
         else
             unmatched "${filename}"
         fi
@@ -582,60 +592,60 @@ handle_parameters()
     local parameters=false
     local buffer=""
 
-    # Check and apply boolean parameters
+    # Check and apply boolean parameters.
     for param in "${!BOOL_PARAMS[@]}"; do
         if [[ -n "${!param-}" ]]; then
-            # Assign user-defined value
+            # Assign user-defined value.
             declare -g "${param}=${!param}"
         else
             # Assign default value
             declare -g "${param}=${BOOL_PARAMS[${param}]}"
         fi
 
-        # Track and format changed boolean parameters
+        # Track and format changed boolean parameters.
         if [[ "${!param}" != "${BOOL_PARAMS[${param}]}" ]]; then
             buffer+=" ${param}: ${bold_cyan_text}${!param}${reset}\n"
             parameters=true
         fi
     done
 
-    # Process each list parameter dynamically
+    # Process each list parameter dynamically.
     for list_param in "${LIST_PARAMS[@]}"; do
         local array_name="${list_param}"
         local var_value="${!list_param-}"
 
-        # Ensure the array exists and initialize it
+        # Ensure the array exists and initialize it.
         declare -g -a "${array_name}=()"
 
-        # Read comma-separated list into a dynamically named array
+        # Read comma-separated list into a dynamically named array.
         eval "${array_name}=()"
         IFS=',' eval "read -r -a ${array_name} <<< \"${var_value}\""
 
-        # Determine array length
+        # Determine array length.
         local array_length
         array_length=$(eval "echo \${#${array_name}[@]}")
 
-        # If list is populated, add to buffer
+        # If list is populated, add to buffer.
         if (( array_length > 0 )); then
             buffer+=" ${list_param}: ${bold_cyan_text}${!list_param}${reset}\n"
             parameters=true
         fi
     done
 
-    # Process parameters that should be set if provided (otherwise default to '')
+    # Process parameters that should be set if provided (otherwise default to '').
     for param in "${SET_IF_PROVIDED_PARAMS[@]}"; do
         if [[ -n "${!param-}" ]]; then
-            # Assign user-defined value
+            # Assign user-defined value.
             declare -g "${param}=${!param}"
             buffer+=" ${param}: ${bold_cyan_text}${!param}${reset}\n"
             parameters=true
         else
-            # Default to an empty string
+            # Default to an empty string.
             declare -g "${param}=''"
         fi
     done
 
-    # Process named value parameters and overwrite if different from default
+    # Process named value parameters and overwrite if different from default.
     for param in "${!NAMED_VALUE_PARAMS[@]}"; do
         local default_value="${NAMED_VALUE_PARAMS[${param}]}"
 
@@ -646,20 +656,20 @@ handle_parameters()
             declare -g "${param}=${default_value}"
         fi
 
-        # Track and format changed named value parameters
+        # Track and format changed named value parameters.
         if [[ "${!param}" != "${default_value}" ]]; then
             buffer+=" ${param}: ${bold_cyan_text}${!param}${reset}\n"
             parameters=true
         fi
     done
 
-    # Handle non-standard parameters if applicable
+    # Handle non-standard parameters if applicable.
     if handle_non_standard_parameters; then
         buffer+=${PARAMETERS_BUFFER}
         parameters=true
     fi
 
-    # Display parameter changes if any were set
+    # Display parameter changes if any were set.
     if [[ "${parameters}" == true ]]; then
         draw_line "Parameters"
         printf "%b" "${buffer}"
@@ -677,7 +687,7 @@ footer()
 {
     draw_line 'Report'
 
-    # Define an array of status labels and their corresponding counts
+    # Define an array of status labels and their corresponding counts.
     local stats=(
         "${bold_white_text}Total${reset}: ${file_count}"
         "${bold_green_text}Passed${reset}: ${passed_count}"
@@ -686,7 +696,7 @@ footer()
         "${bold_cyan_text}Unmatched${reset}: ${unmatched_count}"
     )
 
-    # Print all collected statistics in a single formatted line
+    # Print all collected statistics in a single formatted line.
     echo " ${stats[*]}"
 
     draw_line 'Complete'
@@ -700,10 +710,10 @@ footer()
 
 handle_color_parameters()
 {
-    # Default to false if NO_COLOR is not set
+    # Default to false if NO_COLOR is not set.
     NO_COLOR=${NO_COLOR:-false}
 
-    # Ensure NO_COLOR is strictly a boolean value (true or false)
+    # Ensure NO_COLOR is strictly a boolean value (true or false).
     NO_COLOR=$([[ "${NO_COLOR}" == true ]] && echo true || echo false)
 }
 
@@ -720,12 +730,12 @@ setup()
 
     handle_color_parameters
 
-    # Declare global variables explicitly
+    # Declare global variables explicitly.
     declare -g screen_width
     declare -g bold_red_text bold_green_text bold_yellow_text bold_cyan_text bold_white_text reset
     declare -g file_count passed_count failed_count filtered_count unmatched_count
 
-    # Initialize variables with default values
+    # Initialize variables with default values.
     screen_width=0
     bold_red_text=''
     bold_green_text=''
@@ -739,21 +749,21 @@ setup()
     filtered_count=0
     unmatched_count=0
 
-    # Check if 'tput' is available before using it
+    # Check if 'tput' is available before using it.
     if ! command -v tput &>/dev/null; then
         echo "Error: 'tput' command not found. Terminal capabilities may be limited." >&2
-        # Set a default safe width
+        # Set a default safe width.
         screen_width=140
         return
     fi
 
-    # Get the terminal width and adjust it
+    # Get the terminal width and adjust it.
     screen_width=$(tput cols)
     screen_width=$((screen_width - 2))
-    # Ensure minimum width
+    # Ensure minimum width.
     (( screen_width < 140 )) && screen_width=140
 
-    # Set color formatting variables if NO_COLOR is disabled
+    # Set color formatting variables if NO_COLOR is disabled.
     if [[ "${NO_COLOR}" == false ]]; then
         bold_red_text=$(tput bold; tput setaf 1)
         bold_green_text=$(tput bold; tput setaf 2)
@@ -779,24 +789,24 @@ check_configuration()
     local config_buffer=""
     local prefix=" [ ${bold_red_text}Config Error${reset} ]"
 
-    # Check required string variables
+    # Check required string variables.
     for var in "${REQUIRED_VARIABLES[@]}"; do
-        # Use ${!var-} to avoid unbound variable errors
+        # Use ${!var-} to avoid unbound variable errors.
         if [[ -z "${!var-}" ]]; then
             config_buffer+="${prefix} ${var} is not set.\n"
             ((errors_found++))
         fi
     done
 
-    # Check required array variables (ensure they exist and are not empty)
+    # Check required array variables (ensure they exist and are not empty).
     for arr in "${REQUIRED_ARRAYS[@]}"; do
         if ! declare -p "${arr}" &>/dev/null; then
             config_buffer+="${prefix} ${arr} is not set.\n"
             ((errors_found++))
-            continue  # Skip further checks if the array is not set
+            continue  # Skip further checks if the array is not set.
         fi
 
-        # Get the length of the array safely
+        # Get the length of the array safely.
         local arr_length
         arr_length=$(eval "echo \${#${arr}[@]}")
 
@@ -806,7 +816,7 @@ check_configuration()
         fi
     done
 
-    # Check required directory variables (ensure directories exist)
+    # Check required directory variables (ensure directories exist).
     for dir in "${REQUIRED_DIRECTORIES[@]}"; do
         if [[ ! -d "${!dir-}" ]]; then
             config_buffer+="${prefix} Check ${dir} settings as ${!dir-} does not exist.\n"
@@ -814,7 +824,7 @@ check_configuration()
         fi
     done
 
-    # If any errors were found, print them and exit with failure status
+    # If any errors were found, print them and exit with failure status.
     if (( errors_found > 0 )); then
         printf "%b" "${config_buffer}" >&2
         exit "${EXIT_VALUE}"
@@ -836,16 +846,16 @@ check_bash_version()
     local current_version
     local sorted_versions
 
-    # Extract only the numeric part (major.minor.patch) from BASH_VERSION
+    # Extract only the numeric part (major.minor.patch) from BASH_VERSION.
     current_version=$(echo "${BASH_VERSION}" | sed -E 's/[^0-9.]*([0-9.]+).*/\1/')
 
-    # Compare versions by sorting them and taking the smallest value
+    # Compare versions by sorting them and taking the smallest value.
     sorted_versions=$(printf '%s\n' "${required_version}" "${current_version}" | sort -V | head -n1)
 
-    # If the sorted first version isn't the required version, the Bash version is outdated
+    # If the sorted first version isn't the required version, the Bash version is outdated.
     if [[ "${sorted_versions}" != "${required_version}" ]]; then
         echo "[ ${bold_red_text}Version Error${reset} ] Bash version ${current_version} is too old. Require ${required_version} or newer." >&2
-        # Exit with an error if the Bash version is too old
+        # Exit with an error if the Bash version is too old.
         exit 1
     fi
 }
@@ -855,25 +865,24 @@ check_bash_version()
 # -------------------------------------------------------------------------------- #
 
 main() {
-    setup                       # Initialize terminal settings, colours, and global variables
-    check_bash_version          # Ensure the script is running on a compatible Bash version
-    check_configuration         # Validate required configuration variables and directories
-    handle_prerequisites        # Ensure required commands and dependencies are installed
-    handle_parameters           # Process script parameters and update global settings
-    get_version_information     # Retrieve and format version information
-    draw_line "${BANNER}"       # Display the script banner with version info
-    scan_files                  # Scan files and process them based on inclusion/exclusion rules
-    footer                      # Print a summary report of the scan results
+    setup                       # Initialize terminal settings, colours, and global variables.
+    check_bash_version          # Ensure the script is running on a compatible Bash version.
+    check_configuration         # Validate required configuration variables and directories.
+    handle_prerequisites        # Ensure required commands and dependencies are installed.
+    handle_parameters           # Process script parameters and update global settings.
+    get_version_information     # Retrieve and format version information.
+    draw_line "${BANNER}"       # Display the script banner with version info.
+    scan_files                  # Scan files and process them based on inclusion/exclusion rules.
+    footer                      # Print a summary report of the scan results.
 
-    # Override exit value if REPORT_ONLY is enabled
+    # Override exit value if REPORT_ONLY is enabled.
     # shellcheck disable=SC2154
     [[ "${REPORT_ONLY}" == true ]] && EXIT_VALUE=0 
 
-    exit "${EXIT_VALUE}"        # Exit with the final status code
+    exit "${EXIT_VALUE}"        # Exit with the final status code.
 }
 
 main
-
 
 # -------------------------------------------------------------------------------- #
 #                                  END OF SCRIPT!                                  #
